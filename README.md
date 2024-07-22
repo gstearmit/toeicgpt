@@ -11,6 +11,10 @@ TOEIC test generator using ChatGPT
 pip install -r requirements.txt
 ```
 
+```cmd
+venv\Scripts\activate.bat
+```
+
 ## Usage
 
 1. Rename `.env.example` to `.env` and set your OpenAI API key to `API_KEY`.

@@ -1,7 +1,7 @@
 import dotenv
 import ffmpeg
-import openai
 import os
+from openai import OpenAI
 import pyttsx3
 import tempfile
 
@@ -15,7 +15,10 @@ FEMALE_VOICE = int(os.getenv("FEMALE_VOICE"))
 WPM = int(os.getenv("WPM"))
 
 # API key
-openai.api_key = os.getenv("API_KEY")
+client = OpenAI(
+    # This is the default and can be omitted
+    api_key=os.environ.get("OPENAI_API_KEY"),
+)
 
 print("Generating a script...")
 
@@ -23,7 +26,7 @@ message = "I am a man.\nI am a woman."
 
 # Generate a script
 if CHATGPT:
-  response = openai.ChatCompletion.create(
+  response = client.chat.completions.create(
       model="gpt-3.5-turbo",
       temperature=1,
       messages=[
@@ -32,7 +35,7 @@ if CHATGPT:
   )
 
   # Set a response
-  message = response["choices"][0]["message"]["content"]
+  message = response.choices[0].message.content
   message = "\n".join(filter(lambda x: x.strip(), message.split("\n")))
 
 # print(message)
@@ -56,7 +59,7 @@ lines = message.split("\n")
 
 # Judge the speaker
 if True:
-  response = openai.ChatCompletion.create(
+  response = client.chat.completions.create(
       model="gpt-3.5-turbo",
       temperature=0,
       messages=[
@@ -66,7 +69,7 @@ if True:
   )
   
   # Set a response
-  message = response["choices"][0]["message"]["content"]
+  message = response.choices[0].message.content
   
   if "Yes" in message:
     voice[0], voice[1] = voice[1], voice[0]
